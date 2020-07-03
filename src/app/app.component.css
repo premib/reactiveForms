@@ -1,7 +1,39 @@
-#ss{
-    color: red;
+
+.ss{
+    color: #ff6666;
 }
 
 .red{
-    color: red;
+    border-color: #ff6666;
+}
+
+#form-half{
+    background-color: rgb(192, 192, 192);
+    width: 40%;
+    float: left;
+}
+
+#table-half{    
+    width: 59%;
+    float: left;
+}
+
+label{
+    font-weight: bold;
+}
+
+button{
+    width: 95%;
+    margin-right: 2px;
+    margin-bottom: 5px;
+}
+
+#textInp{
+    width: 90%;
+    margin-left: 10px;
+}
+
+input > #rad{
+    width: 4px;
+    margin: 0px;
 }

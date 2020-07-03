@@ -6,33 +6,119 @@
   <title>Document</title>
 </head>
 <body>
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit(userForm)">
-    <div class="form-group">
-      <label for="name">Name: </label>  <input [ngClass]="{red:!userForm.get('name').valid}" formControlName="name" name="name" placeholder="Your name">
-      <span id="ss" *ngIf="!userForm.get('name').valid">   length should be below 20</span>
+  <div>
+    
+    <div id="form-half" style="margin-left: 2px;">
+    <p [innerHTML]="requirementMessage" style="color: red"></p>
+      <form  [formGroup]="userForm" (ngSubmit)="onSubmit(userForm)">
+        <div class="form-group">
+          <label for="name">Name: </label>  <input id="textInp" class="form-control" [ngClass]="{red:(!userForm.get('name').valid && userForm.get('name').dirty )}"  formControlName="name" name="name" placeholder="eg: Alexander Supertramp" required>
+          <span class="ss" *ngIf="!userForm.get('name').valid && userForm.get('name').dirty"> &nbsp;&nbsp;<small>name should have 6-20 characters</small> </span>
+        </div>
+        <div class="form-group">
+          <label for="email">Email: </label>  <input id="textInp" class="form-control" formControlName="email" [ngClass]="{red:(!userForm.get('email').valid && userForm.get('email').dirty )}" name="email" placeholder="eg: alex.supertramp@nothing.univ " required>
+          <span class="ss" *ngIf="!userForm.get('email').valid && userForm.get('email').dirty"> &nbsp;&nbsp;<small>Not a proper e-mail format</small> </span>
+        </div>
+        <div class="form-group">
+          <label for="dob">Date of Birth:  </label> &nbsp;&nbsp;<input type="date" name="dob" formControlName="dob" [max]="maxDate">
+        </div>
+        <div class="form-group">
+          <label for="country">Country: </label> <select id="textInp" class="form-control" name="country" formControlName="country">
+            <option value="IN">India</option>
+            <option value="PK">Pakistan</option>
+          </select>
+        </div>
+        <div class="form-group" id="rad">
+          <label for="gender">Gender: </label> &nbsp;&nbsp;
+            <div class="form-check form-check-inline">
+              <input class= "form-check-input" type="radio" formControlName="gender" name="gender" value="male"> <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class= "form-check-input" type="radio" formControlName="gender" name="gender" value="female"> <label class="form-check-label" for="female">Female</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class= "form-check-input" type="radio" formControlName="gender" name="gender" value="other"> <label class="form-check-label" for="female">Other</label>
+            </div>
+        </div>
+        <div class="form-group">
+          <label for="marrital_status">Marrital Status: </label> <select id="textInp" class="form-control" name="marrital_status" formControlName="marrital_status">
+            <option value="m">married</option>
+            <option value="u">unmarried</option>
+            <option value="d">divorced</option>
+            <option value="w">widowed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fav_food">Favourite Food: </label> <input  class="form-control" type="text" formControlName="fav_food" name="fav_food" id="textInp">
+        </div>
+        <div class="form-group">
+          <label for="mobile">Mobile: </label>  <input id="textInp" type="tel" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" formControlName="mobile" >
+        </div>
+        <div class="form-group">
+          <div formArrayName="address" *ngFor="let address of userForm.get('address')['controls'];let row = index">
+            <div [formGroupName]="row">
+              <div class="row">
+                <div class= "col">
+                  <label for="door_no">Door No:</label>
+                  <input id="textInp" type="text" formControlName="door_no" name="door_no" >
+                </div>
+                <div class= "col">
+                  <label for="zipcode">Zip Code: </label>
+                  <input id="textInp" type="number" formControlName="zipcode" name="zipcode" >
+                </div>
+              </div>  
+              <br>
+              <div class="row" style="width: 90%; margin-left: 0px;"> 
+                <label for="street">Street: </label>
+                <br>
+                <input style="width: 100%;margin-left: 10px;" type="text" formControlName="street" name="street" >
+              </div>        
+              <br><br>
+            </div>
+          </div>
+        </div>
+        <div >
+          <button class="btn btn-primary" type="submit">Send</button>
+        </div>
+      </form>
     </div>
-    <div class="form-group">
-      <label for="age">Age: </label> <input type="text" name="age" formControlName="age">
+    
+    <div id="table-half">
+      <table class="table" style="background-color: lavenderblush;">
+       
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">DOB</th>
+            <th scope="col">Country</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Marrital Status</th>
+            <th scope="col">favourite food</th>
+            <th scope="col">Mobile</th>
+            <th scope="col">Address 1</th>
+            <th scope="col">Address 2</th>
+            <th scope="col">Address 3</th>
+          </tr>
+        </thead>
+  
+        <tbody>
+          <tr *ngFor="let user of userList; let i= index">
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.dob}}</td>
+            <td>{{user.country}}</td>
+            <td>{{user.gender}}</td>
+            <td>{{user.marrital_status}}</td>
+            <td>{{user.fav_food}}</td>
+            <td>{{user.mobile}}</td>
+            <td *ngFor="let iter of user.address">{{iter.door_no}}, {{iter.street}}, {{iter.zipcode}}</td>
+            <td><button (click)="delete(i)">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="form-group">
-      <label for="email">Email: </label>  <input formControlName="email" name="email" placeholder="Your email">
-    </div>
-    <div class="form-group">
-      <label for="country">country: </label> <select name="country" formControlName="country">
-        <option value="IN">india</option>
-        <option value="PK">pakistan</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="mobile">Mobile: </label>  <input formControlName="mobile" placeholder="mobile no">
-    </div>
+  </div>
 
- <button type="submit">Send</button>
-</form>
-<!-- <table>
-  <tr *ngFor= "let var of userForm">
-    <td>{{var}}</td>
-  </tr>
-</table> -->
 </body>
 </html>
