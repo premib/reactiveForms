@@ -19,6 +19,7 @@
           <label for="email">Email: </label>  <input id="textInp" class="form-control" formControlName="email" [ngClass]="{red:(!userForm.get('email').valid && userForm.get('email').dirty )}" name="email" placeholder="eg: alex.supertramp@nothing.univ " required>
           <span class="ss" *ngIf="!userForm.get('email').valid && userForm.get('email').dirty"> &nbsp;&nbsp;<small>Not a proper e-mail format</small> </span>
         </div>
+        <br>
         <div class="form-group">
           <label for="dob">Date of Birth:  </label> &nbsp;&nbsp;<input type="date" name="dob" formControlName="dob" [max]="maxDate">
         </div>
@@ -42,17 +43,18 @@
         </div>
         <div class="form-group">
           <label for="marrital_status">Marrital Status: </label> <select id="textInp" class="form-control" name="marrital_status" formControlName="marrital_status">
-            <option value="m">married</option>
-            <option value="u">unmarried</option>
-            <option value="d">divorced</option>
-            <option value="w">widowed</option>
+            <option value="married">Married</option>
+            <option value="unmarried">Unmarried</option>
+            <option value="divorced">Divorced</option>
+            <option value="widowed">Widowed</option>
           </select>
         </div>
         <div class="form-group">
           <label for="fav_food">Favourite Food: </label> <input  class="form-control" type="text" formControlName="fav_food" name="fav_food" id="textInp">
         </div>
         <div class="form-group">
-          <label for="mobile">Mobile: </label>  <input id="textInp" type="tel" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" formControlName="mobile" >
+          <label for="mobile">Mobile: </label>  <input  id="textInp" type="tel" class="form-control"  [ngClass]="{red:(!userForm.get('mobile').valid && userForm.get('mobile').dirty )}" formControlName="mobile" >
+          <span class="ss" *ngIf="!userForm.get('mobile').valid && userForm.get('mobile').dirty"> &nbsp;&nbsp;<small>Enter a 10- digit mobile number</small> </span>
         </div>
         <div class="form-group">
           <div formArrayName="address" *ngFor="let address of userForm.get('address')['controls'];let row = index">
@@ -84,7 +86,7 @@
     </div>
     
     <div id="table-half">
-      <table class="table" style="background-color: lavenderblush;">
+      <table class="table" style="background-color: #557A95;">
        
         <thead>
           <tr>
@@ -96,9 +98,7 @@
             <th scope="col">Marrital Status</th>
             <th scope="col">favourite food</th>
             <th scope="col">Mobile</th>
-            <th scope="col">Address 1</th>
-            <th scope="col">Address 2</th>
-            <th scope="col">Address 3</th>
+            <th scope="col">Address</th>
           </tr>
         </thead>
   
@@ -112,7 +112,14 @@
             <td>{{user.marrital_status}}</td>
             <td>{{user.fav_food}}</td>
             <td>{{user.mobile}}</td>
-            <td *ngFor="let iter of user.address">{{iter.door_no}}, {{iter.street}}, {{iter.zipcode}}</td>
+            <!-- <td *ngFor="let iter of user.address">{{iter.door_no}}, {{iter.street}}, {{iter.zipcode}}</td> -->
+            <td>
+              <select name="address" id="">
+                <option *ngFor="let mission of user.address">
+                  {{mission}}
+               </option>
+              </select>
+            </td>
             <td><button (click)="delete(i)">Delete</button></td>
           </tr>
         </tbody>

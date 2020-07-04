@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { fn, THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { empty } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -26,8 +27,8 @@ export class AppComponent {
       'email': fb.control('', [Validators.required, Validators.email]),
       'gender': fb.control('', [Validators.required]),
       'fav_food': fb.control(''),
-      'mobile': fb.control('', Validators.required),
-      'marrital_status': fb.control('u'),
+      'mobile': fb.control('', [Validators.required, Validators.pattern('[0-9]*'), Validators.maxLength(10)]),
+      'marrital_status': fb.control('unmarried'),
       'address': fb.array([
         fb.group({
           'door_no': fb.control('', Validators.pattern('[0-9]*')),
@@ -54,24 +55,41 @@ export class AppComponent {
  
 
   onSubmit(form: FormGroup) {
-
-    console.log(form.value, form.value.name.localeCompare(''))
+    //check required fields
     if(!form.value.name.localeCompare('') && !form.value.email.localeCompare('')){
-      window.scroll(0, 0)
+      window.scroll(0, 0);
       this.requirementMessage= "Name and E-mail are required fields";
     }
-      // console.log('hey', form.value.name.localeCompare(''))
-    else if(!form.value.name.localeCompare(''))
+    else if(!form.value.name.localeCompare('')){
+      window.scroll(0, 0);
       this.requirementMessage= "Name is a required field";
-    else if(!form.value.email.localeCompare(''))
+    }
+    else if(!form.value.email.localeCompare('')){
+      window.scroll(0, 0);
       this.requirementMessage= "E-mail is a required field";
+    }
     else{
-      // console.log(this.userList)
+        let addressComplete: string= "";
+        let addressList: Array<string>= []
+        for(let key of form.value.address){
+          addressComplete= key.door_no+","+key.street+","+key.zipcode;
+          addressList.push(addressComplete);
+        }
+        form.value.address= addressList;
         this.userList.push(form.value);    
         this.requirementMessage= ""
+        this.formReset(form)
+    }
+    console.log(form.value.mobile)
+    //check mobile number
+    if(form.value.mobile.valid){
+      console.log("yes mobile")
     }
   }
 
+  formReset(formL: FormGroup){
+    this.userForm.reset(formL)
+  }
   delete(index: number){
     console.log("here")
     this.userList.splice(index, 1);
