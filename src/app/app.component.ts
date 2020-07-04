@@ -17,9 +17,7 @@ export class AppComponent {
   userList: Array<any>= [];
   requirementMessage: string= "";
 
-  constructor(private fb: FormBuilder) {
-    this.todayDate= new Date();
-    this.maxDate= (this.todayDate.getFullYear()- 18)+"-"+String(this.todayDate.getMonth()).padStart(2, '0')+"-"+String(this.todayDate.getDay()).padStart(2, '0')
+  callForm(fb: FormBuilder){
     this.userForm= this.fb.group({
       'name': fb.control('', [Validators.required, Validators.maxLength(20), Validators.minLength(6)]),
       'dob': fb.control(this.maxDate, [Validators.required, Validators.max(+this.maxDate)]),
@@ -27,7 +25,7 @@ export class AppComponent {
       'email': fb.control('', [Validators.required, Validators.email]),
       'gender': fb.control('', [Validators.required]),
       'fav_food': fb.control(''),
-      'mobile': fb.control('', [Validators.required, Validators.pattern('[0-9]*'), Validators.maxLength(10)]),
+      'mobile': fb.control('', [Validators.required, Validators.pattern('[0-9]*'), Validators.maxLength(10), Validators.minLength(10)]),
       'marrital_status': fb.control('unmarried'),
       'address': fb.array([
         fb.group({
@@ -48,6 +46,11 @@ export class AppComponent {
       ])
     })
   }
+  constructor(private fb: FormBuilder) {
+    this.todayDate= new Date();
+    this.maxDate= (this.todayDate.getFullYear()- 18)+"-"+String(this.todayDate.getMonth()).padStart(2, '0')+"-"+String(this.todayDate.getDay()).padStart(2, '0')
+    this.callForm(fb)
+  }
 
   ngOnInit() {
     
@@ -56,6 +59,7 @@ export class AppComponent {
 
   onSubmit(form: FormGroup) {
     //check required fields
+
     if(!form.value.name.localeCompare('') && !form.value.email.localeCompare('')){
       window.scroll(0, 0);
       this.requirementMessage= "Name and E-mail are required fields";
@@ -72,18 +76,24 @@ export class AppComponent {
         let addressComplete: string= "";
         let addressList: Array<string>= []
         for(let key of form.value.address){
-          addressComplete= key.door_no+","+key.street+","+key.zipcode;
+          if(key.door_no.localeCompare('')&&key.street.localeCompare('')&&key.zipcode.toString().localeCompare('')){
+            addressComplete= key.door_no+","+key.street+","+key.zipcode;
+          }
+          else{
+            addressComplete= "nil"
+          }
           addressList.push(addressComplete);
         }
-        form.value.address= addressList;
+        if(addressList.length == 0){
+          form.value.address= "nil"
+        }
+        else{
+          form.value.address= addressList;
+        }
         this.userList.push(form.value);    
         this.requirementMessage= ""
         this.formReset(form)
-    }
-    console.log(form.value.mobile)
-    //check mobile number
-    if(form.value.mobile.valid){
-      console.log("yes mobile")
+        this.callForm(new FormBuilder())
     }
   }
 
